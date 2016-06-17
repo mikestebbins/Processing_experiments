@@ -7,30 +7,67 @@ int current_y = 0;
 int max_growth_length_x = 1280; 
 int max_growth_length_y = 900; 
 int loop_count= 0;
-int max_lines = 500;
+//int max_lines = 500;
+boolean next_horz = true; // false = vertical, true = horiontal  
+Boolean next_down = true; // false = down, true = up
+Boolean next_right = true; // false = left, true = right
+
+int min_line_length = 10;
+int max_line_length = 10;
  
 void setup(){
   size(1280,900);
   background(255);
   smooth();
   //noStroke();
-  strokeWeight(5);
+  strokeWeight(2);
   strokeCap(ROUND);
+  frameRate(100);
 }
 
 void draw() {
-  int new_x = (int) random(max_growth_length_x);
-  int new_y = (int) random(max_growth_length_y);
+  int new_x = current_x;
+  int new_y = current_y;
   
-  line(current_x,current_y,new_x,new_y);
-  stroke(random(50,100));
-  current_x = new_x;
-  current_y = new_y;
-  loop_count ++;
-  if (loop_count >= max_lines) {
-    background(255);
-    loop_count = 0;
+  if (next_horz == true) {
+    
+    if (next_right == true)  {
+      new_x = current_x + (int) random(min_line_length,max_line_length);
+    }
+    else  {
+      new_x = current_x - (int) random(min_line_length,max_line_length);
+    }
+    
+    if ((new_x >= max_growth_length_x) || (new_x <= 0))  {
+      next_right = !next_right; 
+    }
+    
   }
+  
+  else  {
+    
+    if (next_down == true)  {
+      new_y = current_y + (int) random(min_line_length,max_line_length);
+    }
+    else  {
+      new_y = current_y - (int) random(min_line_length,max_line_length);      
+    }
+    
+    if ((new_y >= max_growth_length_y) || (new_y <= 0))  {
+      next_down = !next_down; 
+    }
+
+  } 
+    line(current_x,current_y,new_x,new_y);
+    current_x = new_x;
+    current_y = new_y;
+    stroke(random(50,50));
+    loop_count ++;
+    next_horz = !next_horz;
+//  if (loop_count >= max_lines) {
+//    background(255);
+//    loop_count = 0;
+//  }
 }
 
 
