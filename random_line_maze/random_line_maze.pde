@@ -1,31 +1,41 @@
 
 ArrayList traces = new ArrayList();
-Boolean md = false;
-int size = 10;
+Boolean md = true;
+int size = 4;
 
-int max_growth_length_x = 1280; 
-int max_growth_length_y = 900; 
+int max_growth_length_x = 640; 
+int max_growth_length_y = 450; 
 //int loop_count= 0;
 //int max_lines = 500;
  
 void setup(){
-  size(1280,900);
+  size(640,450);
   background(255);
   smooth();
   //noStroke();
-  strokeWeight(2);
+  strokeWeight(5);
   strokeCap(ROUND);
   frameRate(100);
 }
 
 void draw(){
-  if(md){
-    for(int f=0; f<size; f+=1){
+/*
+if(md){
+    for(int f=0; f<=size; f+=1){
       //for(int g=0; g<height; g+=height/10){
       traces.add(new Trace((int)random(0,width),(int)random(0,height)) );
       //}
     }
   }
+ */
+ 
+ if(md==true)  {
+  for (int f=0; f<size; f++)  {
+    traces.add(new Trace((int)random(0,width),(int)random(0,height)) );    
+  }
+  md = false;
+ }
+  
   //fill(255,10);
   //rect(-1,1,width+1,height+1);
   //background(255);
@@ -64,8 +74,8 @@ class Trace {
   boolean next_down = true; // false = down, true = up
   boolean next_right = true; // false = left, true = right
 
-  int min_line_length = 20;
-  int max_line_length = 20;
+  int min_line_length = 10;
+  int max_line_length = 10;
  
   Trace(int current_x, int current_y) {
     this.current_x = current_x;
@@ -109,7 +119,7 @@ class Trace {
     line(this.current_x,this.current_y,this.new_x,this.new_y);
     this.current_x = this.new_x;
     this.current_y = this.new_y;
-    stroke(random(50,150));
+    stroke(random(50,50));
     this.next_horz = !this.next_horz;
   }
 }
