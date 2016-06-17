@@ -1,19 +1,12 @@
 
-ArrayList points = new ArrayList();
+ArrayList traces = new ArrayList();
 Boolean md = false;
 int size = 10;
-int current_x = 0;
-int current_y = 0;
+
 int max_growth_length_x = 1280; 
 int max_growth_length_y = 900; 
-int loop_count= 0;
+//int loop_count= 0;
 //int max_lines = 500;
-boolean next_horz = true; // false = vertical, true = horiontal  
-Boolean next_down = true; // false = down, true = up
-Boolean next_right = true; // false = left, true = right
-
-int min_line_length = 10;
-int max_line_length = 10;
  
 void setup(){
   size(1280,900);
@@ -25,75 +18,25 @@ void setup(){
   frameRate(100);
 }
 
-void draw() {
-  int new_x = current_x;
-  int new_y = current_y;
-  
-  if (next_horz == true) {
-    
-    if (next_right == true)  {
-      new_x = current_x + (int) random(min_line_length,max_line_length);
-    }
-    else  {
-      new_x = current_x - (int) random(min_line_length,max_line_length);
-    }
-    
-    if ((new_x >= max_growth_length_x) || (new_x <= 0))  {
-      next_right = !next_right; 
-    }
-    
-  }
-  
-  else  {
-    
-    if (next_down == true)  {
-      new_y = current_y + (int) random(min_line_length,max_line_length);
-    }
-    else  {
-      new_y = current_y - (int) random(min_line_length,max_line_length);      
-    }
-    
-    if ((new_y >= max_growth_length_y) || (new_y <= 0))  {
-      next_down = !next_down; 
-    }
-
-  } 
-    line(current_x,current_y,new_x,new_y);
-    current_x = new_x;
-    current_y = new_y;
-    stroke(random(50,50));
-    loop_count ++;
-    next_horz = !next_horz;
-//  if (loop_count >= max_lines) {
-//    background(255);
-//    loop_count = 0;
-//  }
-}
-
-
- /*
 void draw(){
   if(md){
     for(int f=0; f<size; f+=1){
       //for(int g=0; g<height; g+=height/10){
-      points.add(new Point(random(0,width),random(0,height)) );
+      traces.add(new Trace((int)random(0,width),(int)random(0,height)) );
       //}
     }
   }
   //fill(255,10);
   //rect(-1,1,width+1,height+1);
   //background(255);
-  noiseDetail(8,0);
+ // noiseDetail(8,0);
   //noiseSeed(1);
-  for(int i=points.size()-1; i>0; i--){
-    Point p = (Point)points.get(i);
-    p.update();
-    if(p.finished){
-      points.remove(i);
-    }
+  for(int i=traces.size()-1; i>0; i--) {
+    Trace t = (Trace)traces.get(i);
+    t.update();
   }
    
-  println(points.size());
+  println(traces.size());
 }
  
 void mousePressed(){
@@ -105,67 +48,68 @@ void mouseReleased(){
 void keyPressed(){
   background(255);
   noiseSeed(round(random(1000)));
-  for(int i=points.size()-1; i>0; i--){
-    Point p = (Point)points.get(i);
+  for(int i=traces.size()-1; i>0; i--){
+    Trace t = (Trace)traces.get(i);
     //p.x = random(width);
     //p.y = random(height);
-    points.remove(i);
+    traces.remove(i);
   }
   //saveFrame("perlin####.png");
 }
  
-class Point { 
-  float x,y,xv = 0, yv = 0;
-  float maxSpeed = 3000000;
+class Trace { 
+  int current_x,current_y,new_x=0, new_y=0;
  
-  Boolean finished = false;
+  boolean next_horz = true; // false = vertical, true = horiontal  
+  boolean next_down = true; // false = down, true = up
+  boolean next_right = true; // false = left, true = right
+
+  int min_line_length = 20;
+  int max_line_length = 20;
  
-  Point(float x, float y){
-    this.x = x;
-    this.y = y;
+  Trace(int current_x, int current_y) {
+    this.current_x = current_x;
+    this.current_y = current_y;
   }
  
-  void update(){
-    stroke(0,16);
-    float r = random(1);
-    this.xv = cos(  noise(this.x*.01,this.y*.01)*TWO_PI  );
-    this.yv = -sin(  noise(this.x*.01,this.y*.01)*TWO_PI  );
- 
-    if(this.x>width){
-      //this.x = 1;
-      this.finished = true;
+  void update()  {
+    
+  this.new_x = this.current_x;
+  this.new_y = this.current_y;
+  
+  if (this.next_horz == true) {
+    
+    if (this.next_right == true)  {
+      this.new_x = this.current_x + (int) random(min_line_length,max_line_length);
     }
-    else if(this.x<0){
-      //this.x = width-1;
-      this.finished = true;
+    else  {
+      this.new_x = this.current_x - (int) random(min_line_length,max_line_length);
     }
-    if(this.y>height){
-      //this.y = 1;
-      this.finished = true;
+    
+    if ((this.new_x >= max_growth_length_x) || (new_x <= 0))  {
+      this.next_right = !this.next_right; 
     }
-    else if(this.y<0){
-      //this.y = height-1;
-      this.finished = true;
-    }
- 
-    if(this.xv>maxSpeed){
-      this.xv = maxSpeed;
-    }
-    else if(this.xv<-maxSpeed){
-      this.xv = -maxSpeed;
-    }
-    if(this.yv>maxSpeed){
-      this.yv = maxSpeed;
-    }
-    else if(this.yv<-maxSpeed){
-      this.yv = -maxSpeed;
-    }
- 
-    this.x += this.xv;
-    this.y += this.yv;
- 
-    line(this.x+this.xv, this.y+this.yv,this.x,this.y );
+    
   }
- 
+  
+  else  {
+    
+    if (this.next_down == true)  {
+      this.new_y = this.current_y + (int) random(min_line_length,max_line_length);
+    }
+    else  {
+      this.new_y = this.current_y - (int) random(min_line_length,max_line_length);      
+    }
+    
+    if ((this.new_y >= max_growth_length_y) || (this.new_y <= 0))  {
+      this.next_down = !this.next_down; 
+    }
+    }
+   
+    line(this.current_x,this.current_y,this.new_x,this.new_y);
+    this.current_x = this.new_x;
+    this.current_y = this.new_y;
+    stroke(random(50,150));
+    this.next_horz = !this.next_horz;
+  }
 }
-*/
