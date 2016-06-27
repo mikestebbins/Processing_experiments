@@ -1,12 +1,17 @@
 
 ArrayList traces = new ArrayList();
 Boolean md = true;
-int size = 4;
+int number_of_traces = 10;
+int number_of_loops = 10000;
+int loop_counter = 0;
 
 int max_growth_length_x = 640; 
 int max_growth_length_y = 450; 
-//int loop_count= 0;
-//int max_lines = 500;
+
+int min_line_length = 5;
+int max_line_length = 55;
+ 
+int min_framerate = 100; 
  
 void setup(){
   size(640,450);
@@ -15,7 +20,7 @@ void setup(){
   //noStroke();
   strokeWeight(5);
   strokeCap(ROUND);
-  frameRate(100);
+  frameRate(min_framerate);
 }
 
 void draw(){
@@ -30,10 +35,17 @@ if(md){
  */
  
  if(md==true)  {
-  for (int f=0; f<size; f++)  {
+  for (int f=0; f<number_of_traces; f++)  {
     traces.add(new Trace((int)random(0,width),(int)random(0,height)) );    
   }
   md = false;
+ }
+ 
+ if(loop_counter >= number_of_loops)  {
+     background(255);
+     ArrayList traces = new ArrayList();
+     md = true;
+     loop_counter = 0;
  }
   
   //fill(255,10);
@@ -45,7 +57,7 @@ if(md){
     Trace t = (Trace)traces.get(i);
     t.update();
   }
-   
+  loop_counter = loop_counter + 1; 
   println(traces.size());
 }
  
@@ -74,8 +86,8 @@ class Trace {
   boolean next_down = true; // false = down, true = up
   boolean next_right = true; // false = left, true = right
 
-  int min_line_length = 10;
-  int max_line_length = 10;
+//  int min_line_length = 10;
+//  int max_line_length = 10;
  
   Trace(int current_x, int current_y) {
     this.current_x = current_x;
