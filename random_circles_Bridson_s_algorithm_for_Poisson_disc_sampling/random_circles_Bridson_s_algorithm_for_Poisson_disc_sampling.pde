@@ -22,7 +22,7 @@ float circleY = 0;
 int counter = 0;
 
 void setup() {
-  size(1200, 800); 
+  size(640, 360); 
   background(255);
   fill(0,0,0);
   noStroke();
