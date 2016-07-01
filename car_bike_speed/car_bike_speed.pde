@@ -34,8 +34,9 @@ float time = 0.0; // time counter
 float radar_cone_angle_rads = radians(radar_cone_angle);
 float mph_to_fps = 1.46667; // convert mph to feet/sec
 
-String message_1a = "RADAR-OBSERVED RELATIVE SPEED (ft/sec): ";
-String message_2a = "ANGLE (deg): ";
+String message_1a = " : car's speed (relative to bike, ft/sec)";
+String message_2a = " : angle between (deg)";
+String message_3a = " : radar-observed speed (ft/sec)";
 
 
 PVector car = new PVector(car_x_position,car_y_position);
@@ -58,51 +59,64 @@ void setup() {
   rectMode(CENTER);
   frameRate(10);
   f = createFont("Arial",16,true); // Arial, 16 point, anti-aliasing on
-
 }
 
 void draw()  {  
   
   background(255); // clear screen
   
+  // start over once the car reaches the edge of the screen
   if (car.x >= width)  {
     bike.x = bike_x_position_initial;
     car.x = car_x_position_initial;
     output_images = false;
     background(255); // clear screen
-    delay(750);
+    delay(1500);
   }
   
   else  {
+    // update positions
     bike.x = bike.x + (bike_speed * mph_to_fps)*timestep;
     car.x = car.x + (car_speed * mph_to_fps)*timestep;
+        
+    // build the radar triangle
     float radar_extent_x = bike.x - radar_cone_length;
     float radar_extent_y_top = bike.y - (tan(radar_cone_angle_rads/2)*radar_cone_length);
     float radar_extent_y_bottom = bike.y + (tan(radar_cone_angle_rads/2)*radar_cone_length);
     
+    // draw all of the "bodies"
     drawRoad();
     drawRadar(radar_extent_x,radar_extent_y_top,radar_extent_y_bottom);
     drawBike();
     drawCar();
     
-    String message_1b = ("0.0");
-    
+    PVector car_to_bike = PVector.sub(bike,car);
+    PVector car_to_bike_vel = PVector.sub(bike_vel,car_vel);
+    float angle_between = degrees(car_to_bike.heading());
+
+    String message_1b = nfp(car_to_bike_vel.x,2,1);
+    String message_2b = nfp(angle_between,3,1);
+    String message_3b = ("n/a");
+
+    // if the car is within the radar triangle calc some stuff, draw an arrow, and update the text    
     if (car.x + car_length/2 >= radar_extent_x)  {
-      PVector car_to_bike = PVector.sub(bike,car);
-      PVector car_to_bike_vel = PVector.sub(bike_vel,car_vel);
       drawRelativeVelocityVector(car_to_bike, bike);
-      float relative_speed = car_to_bike.mag();
-      message_1b = nfp(relative_speed,2,1);
+      float relative_speed = car_to_bike_vel.mag() * cos(radians(angle_between));
+      message_3b = nfp(relative_speed,2,1);      
     }
     
-    String message_1 = message_1a + message_1b;
+    // print the text onscreen
+    String message_1 = message_1b + message_1a + "\n" + message_2b + message_2a + "\n" + message_3b + message_3a;
     textFont(f,16);
     fill(20);
     text(message_1,10,20);
       
+    // output images to use for a video
     if (output_images == true)  {
       saveFrame("line-######.png");
     }
+    
+    // increment the time counter
     time = time + timestep;
   }
 }
