@@ -34,7 +34,9 @@ float time = 0.0; // time counter
 float radar_cone_angle_rads = radians(radar_cone_angle);
 float mph_to_fps = 1.46667; // convert mph to feet/sec
 
-String speed_message_1 = "RELATIVE SPEED (ft/sec): ";
+String message_1a = "RADAR-OBSERVED RELATIVE SPEED (ft/sec): ";
+String message_2a = "ANGLE (deg): ";
+
 
 PVector car = new PVector(car_x_position,car_y_position);
 PVector bike = new PVector(bike_x_position,bike_y_position);
@@ -83,17 +85,20 @@ void draw()  {
     drawBike();
     drawCar();
     
+    String message_1b = ("0.0");
+    
     if (car.x + car_length/2 >= radar_extent_x)  {
       PVector car_to_bike = PVector.sub(bike,car);
       PVector car_to_bike_vel = PVector.sub(bike_vel,car_vel);
       drawRelativeVelocityVector(car_to_bike, bike);
       float relative_speed = car_to_bike.mag();
-      String speed_message_2 = nfp(relative_speed,2,1);
-      String message = speed_message_1 + speed_message_2;
-      textFont(f,16);                  // STEP 3 Specify font to be used
-      fill(20);                         // STEP 4 Specify font color 
-      text(message,10,20);   // STEP 5 Display Text
+      message_1b = nfp(relative_speed,2,1);
     }
+    
+    String message_1 = message_1a + message_1b;
+    textFont(f,16);
+    fill(20);
+    text(message_1,10,20);
       
     if (output_images == true)  {
       saveFrame("line-######.png");
