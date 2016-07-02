@@ -21,10 +21,10 @@ float bike_speed = 10; // mph
 float car_speed = 35; // mph
 float distance_between_car_and_bike = 2; // feet
 
-float radar_cone_angle = 60; // degrees
-float radar_cone_length = 98*2; // feet, range of radar
+float radar_cone_angle = 90; // degrees
+float radar_cone_length = 98*2.5; // feet, range of radar
 
-float timestep = 0.2; // seconds
+float timestep = 0.1; // seconds
 
 // CALCULATED/SET-UP TYPE INPUTS -----------------------------------------------------------------------
 float bike_x_position = bike_x_position_initial;
@@ -138,7 +138,8 @@ void drawRoad()  {
 void drawRadar(float radar_extent_x,float radar_extent_y_top,float radar_extent_y_bottom)  {
   fill(255,0,150,50);
   noStroke();
-  triangle(bike.x,bike.y,radar_extent_x,radar_extent_y_top,radar_extent_x,radar_extent_y_bottom);
+  //triangle(bike.x,bike.y,radar_extent_x,radar_extent_y_top,radar_extent_x,radar_extent_y_bottom);
+  arc(bike.x,bike.y,2*radar_cone_length,2*radar_cone_length,PI-(radar_cone_angle_rads/2),PI+(radar_cone_angle_rads/2));
 }
 
 void drawBike()  {
@@ -155,6 +156,7 @@ void drawCar()  {
 
 void drawRelativeVelocityVector(int x1, int y1, int x2, int y2) {
   stroke(255,0,0);
+  strokeWeight(4);
   line(x1, y1, x2, y2);
   pushMatrix();
   translate(x2, y2);
