@@ -19,7 +19,7 @@ int road_stripe_width = 10;
 
 float bike_speed = 10; // mph
 float car_speed = 35; // mph
-float distance_between_car_and_bike = 2; // feet
+float distance_between_car_and_bike = 20; // feet
 
 float radar_cone_angle = 90; // degrees
 float radar_cone_length = 98*2.5; // feet, range of radar
@@ -36,7 +36,8 @@ float mph_to_fps = 1.46667; // convert mph to feet/sec
 
 String message_1a = " : car's speed (relative to bike, ft/sec)";
 String message_2a = " : angle between (deg)";
-String message_3a = " : radar-observed speed (ft/sec)";
+String message_3a = " : min. distance between (ft)";
+String message_4a = " : radar-observed speed (ft/sec)";
 
 PVector car = new PVector(car_x_position,car_y_position);
 PVector bike = new PVector(bike_x_position,bike_y_position);
@@ -90,23 +91,30 @@ void draw()  {
     float angle_between = degrees(car_to_bike.heading());
 
     String message_1b = nfp(car_to_bike_vel.x,2,1);
-    String message_2b = ("-------");
-    String message_3b = ("-------");
+    String message_2b = nfp(angle_between,1,1);
+    String message_3b = nfp(distance_between_car_and_bike,1,1);
+    String message_4b = ("---");
 
-    // if the car is within the radar triangle calc some stuff, draw an arrow, and update the text    
+    // if the car is within the radar arc segmet, calc some stuff, draw an arrow, and update the text    
     if ((car.x + car_length/2 >= radar_extent_x) && (angle_between <= radar_cone_angle/2))  {
       drawRelativeVelocityVector(car_to_bike, bike);
-      message_2b = nfp(angle_between,2,1);
+      //message_2b = nfp(angle_between,2,1);
       float relative_speed = car_to_bike_vel.mag() * cos(radians(angle_between));
-      message_3b = nfp(relative_speed,2,1);      
+      message_4b = nfp(relative_speed,2,1);      
     }
     
+    //if (angle_between >= 90)  {
+    //  message_2b = ("---");
+    //}
+    
     // print the text onscreen
-    String message_1 = message_1b + message_1a + "\n" + message_2b + message_2a + "\n" + message_3b + message_3a;
+    //String message_1 = message_1b + message_1a + "\n" + message_2b + message_2a + "\n" + message_3b + message_3a;
     textFont(f,16);
+    String message_1 = message_1b + "\n" + message_2b + "\n" + message_3b + "\n" + message_4b;
     fill(20);
     text(message_1,10,20);
-      
+    String message_2 = message_1a + "\n" + message_2a + "\n" + message_3a+ "\n" + message_4a;
+    text(message_2,60,20);  
     // output images to use for a video
     if (output_images == true)  {
       saveFrame("line-######.png");
@@ -154,22 +162,23 @@ void drawCar()  {
   rect(car.x, car.y,car_length,car_width,car_rad);
 }
 
-void drawRelativeVelocityVector(int x1, int y1, int x2, int y2) {
-  stroke(255,0,0);
-  strokeWeight(4);
-  line(x1, y1, x2, y2);
-  pushMatrix();
-  translate(x2, y2);
-  float a = atan2(x1-x2, y2-y1);
-  rotate(a);
-  line(0, 0, -5, -5);
-  line(0, 0, 5, -5);
-  popMatrix();
-} 
+//void drawRelativeVelocityVector(int x1, int y1, int x2, int y2) {
+//  stroke(0,255,255);
+//  strokeWeight(4);
+//  line(x1, y1, x2, y2);
+//  pushMatrix();
+//  translate(x2, y2);
+//  float a = atan2(x1-x2, y2-y1);
+//  rotate(a);
+//  line(0, 0, -5, -5);
+//  line(0, 0, 5, -5);
+//  popMatrix();
+//} 
 
 void drawRelativeVelocityVector(PVector car_to_bike, PVector bike) {
-  stroke(255,0,0);
-  fill(255,0,0);
+  stroke(0,255,255);
+  strokeWeight(2);
+  fill(0,255,255);
   float angle = car_to_bike.heading();
   pushMatrix();
   translate(car.x,car.y);
@@ -177,7 +186,7 @@ void drawRelativeVelocityVector(PVector car_to_bike, PVector bike) {
   translate(car_to_bike.x,car_to_bike.y);
   rotate(angle);
   noStroke();
-  triangle(0,0,-4,-4,-4,4);
+  triangle(0,0,-6,-6,-6,6);
   popMatrix();
 } 
 
