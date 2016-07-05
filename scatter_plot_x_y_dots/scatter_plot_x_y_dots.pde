@@ -13,6 +13,8 @@ int topMargin = 10;
 int bottomMargin = 110;
 PFont font; // declare font variable of type PFont
 int counter=0;
+
+PFont f;
  
 void setup() {
   size(640, 510);
@@ -20,8 +22,7 @@ void setup() {
   smooth();
    
   // create font from in-memory font
-  font = createFont("Helvetica-Bold", 15);
-   
+  f = createFont("Arial",10,true); // Arial, 16 point, anti-aliasing on   
 }
  
 void draw() {
@@ -32,9 +33,33 @@ void draw() {
     
    else  { 
   background(255);
+  
+  // axis lines
   stroke(200);
   line(leftMargin,bottomMargin,rightMargin,bottomMargin);
   line(leftMargin,bottomMargin,leftMargin,topMargin);
+  
+  // vert axix label
+  pushMatrix();
+  translate(leftMargin - 5,bottomMargin - 20);
+  rotate(3*PI/2);
+  textFont(f,12);
+  fill(80);
+  String vertLabel = "radar speed";
+  text(vertLabel,0,0); 
+  rotate(-3*PI/2);
+  translate(0,0);
+  popMatrix();
+  
+  // horz axis label
+  pushMatrix();
+  translate((leftMargin + rightMargin)/2 - 10,bottomMargin + 15);
+  textFont(f,12);
+  fill(80);
+  String horzLabel = "time";
+  text(horzLabel,0,0); 
+  translate(0,0);
+  popMatrix();
    
   // generate fake data
   plot0[counter] = 50 - counter;
