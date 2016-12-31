@@ -71,6 +71,7 @@ void makeCircles(int gridSize)  {
   println(iterations);
   
   stroke(0);  
+  strokeWeight(2);
   for (int i = 0; i < groupA_rows; i++)  {
     for (int j = 0; j < groupA_columns; j++)  {
       int center_x = j*gridSize;
