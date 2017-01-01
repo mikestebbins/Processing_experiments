@@ -2,15 +2,15 @@
 int bike_width = 12;
 int bike_length = 30;
 int bike_rad = 4;
-float bike_x_position_initial = 320;
-float bike_y_position = 250;
+float bike_x_position_initial = 300;
+float bike_y_position = 300;
 
 int car_width = 28;
 int car_length = 60;
 int car_rad = 10;
 float car_x_position_initial = 10;
 
-int road_centerline_y = 180; 
+int road_centerline_y = 230; 
 int road_width = 160; 
 int road_stripe_length = 30;
 int road_stripe_width = 10;
@@ -19,7 +19,7 @@ int road_stripe_width = 10;
 
 float bike_speed = 10; // mph
 float car_speed = 35; // mph
-float distance_between_car_and_bike = 20; // feet
+float distance_between_car_and_bike = 2; // feet
 
 float radar_cone_angle = 90; // degrees
 float radar_cone_length = 98*2.5; // feet, range of radar
@@ -47,6 +47,21 @@ PVector bike_vel = new PVector(bike_speed*mph_to_fps,0);
 boolean output_images = true;
 PFont f;
 
+//SCATTER PLOT STUFF---------------------------------------------------------------------------------------
+float[] plot0 = new float[100]; //
+float[] plot1 = new float[100]; //
+
+int ballSize = 3;
+int leftMargin = 470;
+int rightMargin = 620;
+int topMargin = 20;
+int bottomMargin = 110;
+int counter = 0;
+
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+
 void setup() {
   size(640, 360); 
   background(255);
@@ -57,15 +72,22 @@ void setup() {
   f = createFont("Arial",16,true); // Arial, 16 point, anti-aliasing on
 }
 
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+
 void draw()  {  
   
   background(255); // clear screen
+  
+  drawGraph();
   
   // start over once the car reaches the edge of the screen
   if (car.x >= width)  {
     bike.x = bike_x_position_initial;
     car.x = car_x_position_initial;
     output_images = false;
+    counter = 0;
     background(255); // clear screen
     delay(50);
   }
@@ -100,12 +122,12 @@ void draw()  {
       drawRelativeVelocityVector(car_to_bike, bike);
       //message_2b = nfp(angle_between,2,1);
       float relative_speed = car_to_bike_vel.mag() * cos(radians(angle_between));
-      message_4b = nfp(relative_speed,2,1);      
+      message_4b = nfp(relative_speed,2,1); 
+      plot0[counter] = relative_speed;
+      counter = counter + 1;
     }
     
-    //if (angle_between >= 90)  {
-    //  message_2b = ("---");
-    //}
+    drawDataPoint(counter,plot0); 
     
     // print the text onscreen
     //String message_1 = message_1b + message_1a + "\n" + message_2b + message_2a + "\n" + message_3b + message_3a;
@@ -131,15 +153,15 @@ void drawRoad()  {
   line(0,(road_centerline_y+road_width/2),width,(road_centerline_y+road_width/2));
   line(0,(road_centerline_y-road_width/2),width,(road_centerline_y-road_width/2));
   
-  rect(width/2,height/2,width,road_width);
+  rect(width/2,road_centerline_y,width,road_width);
   
   fill(255,255,255);
-  rect(width/2,height/2-(road_width/2-5),width,2);
-  rect(width/2,height/2+(road_width/2-5),width,2);
-
+  
+  rect(width/2,(road_centerline_y)-(road_width/2-5),width,2);
+  rect(width/2,(road_centerline_y)+(road_width/2-5),width,2);
 
   for (int i = 0; i <= width; i=i+(road_stripe_length*2))  {
-    rect(i,height/2,road_stripe_length,road_stripe_width,2);
+    rect(i,road_centerline_y,road_stripe_length,road_stripe_width,2);
   } 
 }
 
@@ -176,9 +198,11 @@ void drawCar()  {
 //} 
 
 void drawRelativeVelocityVector(PVector car_to_bike, PVector bike) {
-  stroke(0,255,255);
+  //stroke(0,255,255);
+  stroke(255,0,0);
   strokeWeight(2);
-  fill(0,255,255);
+  //fill(0,255,255);
+  fill(255,0,0);
   float angle = car_to_bike.heading();
   pushMatrix();
   translate(car.x,car.y);
@@ -196,4 +220,61 @@ void keyPressed() {
 
 void keyReleased() {
   loop();
+}
+
+void drawGraph()  {
+  // axis lines
+  stroke(200);
+  line(leftMargin,bottomMargin,rightMargin,bottomMargin);
+  line(leftMargin,bottomMargin,leftMargin,topMargin);
+  
+  // vert axix label
+  pushMatrix();
+  translate(leftMargin - 7,bottomMargin - 10);
+  rotate(3*PI/2);
+  textFont(f,14);
+  fill(80);
+  String vertLabel = "radar speed";
+  text(vertLabel,0,0); 
+  rotate(-3*PI/2);
+  translate(0,0);
+  popMatrix();
+  
+  // horz axis label
+  pushMatrix();
+  translate((leftMargin + rightMargin)/2 - 15,bottomMargin + 15);
+  textFont(f,14);
+  fill(80);
+  String horzLabel = "time";
+  text(horzLabel,0,0); 
+  translate(0,0);
+  popMatrix();
+}
+
+void drawDataPoint(int counter, float[] plot0)  {
+  
+  // draw first data set
+  for (int i = 0; i < counter; i++) {
+    
+    float valX = (float) i*1.25;
+    float valY = plot0[i];
+        
+    println("----------------------------------------------");
+    print(valX);
+    print("  /  ");
+    println(valY);
+                         
+    // map values to x and y axis
+    float posX = map(valX, 0, 100, leftMargin+5, rightMargin);
+    float posY = map(valY, 20, 40, bottomMargin-10, topMargin);
+    
+    //print(posX);
+    //print("  /  ");
+    //println(posY);
+    
+    noStroke();
+    //fill(0,255,255);
+    fill(255,0,0);
+    ellipse(posX,posY,ballSize,ballSize);
+    }  
 }
