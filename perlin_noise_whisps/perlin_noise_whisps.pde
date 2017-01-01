@@ -1,10 +1,10 @@
 
 ArrayList points = new ArrayList();
 Boolean md = false;
-int size = 2;
+int size = 10;
  
 void setup(){
-  size(1280,900);
+  size(320,320);
   background(255);
   smooth();
   //noStroke();
@@ -19,6 +19,16 @@ void draw(){
       //}
     }
   }
+  
+  if (keyPressed)  {
+    if ((key == 'b') || (key == 'B')) {
+      md = true;
+    }
+  }
+  else   {
+    md = false;
+  }  
+  
   //fill(255,10);
   //rect(-1,1,width+1,height+1);
   //background(255);
@@ -41,7 +51,22 @@ void mousePressed(){
 void mouseReleased(){
   md = false;
 }
+
+/*
 void keyPressed(){
+  background(255);
+  noiseSeed(round(random(1000)));
+  for(int i=points.size()-1; i>0; i--){
+    Point p = (Point)points.get(i);
+    //p.x = random(width);
+    //p.y = random(height);
+    points.remove(i);
+  }
+  //saveFrame("perlin####.png");
+}
+*/
+
+void keyReleased(){
   background(255);
   noiseSeed(round(random(1000)));
   for(int i=points.size()-1; i>0; i--){
