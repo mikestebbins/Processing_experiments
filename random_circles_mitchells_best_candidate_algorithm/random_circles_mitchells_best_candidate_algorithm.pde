@@ -2,7 +2,7 @@
 // is furthest away from it's nearest neighbor (compared to all currently existing locations)
 // more info: https://www.khanacademy.org/computer-programming/mitchells-best-candidate-algorithm/5901958850543616
 
-int numberActiveCircles = 1000;
+int numberActiveCircles = 10000;
 int numberCandidateCircles = 10;
 int circleSize = 5;
 
@@ -14,11 +14,12 @@ float circleY = 0;
 int counter = 0;
 
 void setup() {
-  size(640, 360); 
+  size(320, 320); 
   background(255);
   fill(0,0,0);
   noStroke();
   frameRate(100);
+  delay(2000);
 }
 
 
