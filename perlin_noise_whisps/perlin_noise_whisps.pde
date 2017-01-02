@@ -4,7 +4,7 @@ Boolean md = false;
 int size = 10;
  
 void setup(){
-  size(320,320);
+  size(440,320);
   background(255);
   smooth();
   //noStroke();
@@ -67,6 +67,7 @@ void keyPressed(){
 */
 
 void keyReleased(){
+  saveFrame("perlin####.png");
   background(255);
   noiseSeed(round(random(1000)));
   for(int i=points.size()-1; i>0; i--){
@@ -75,7 +76,6 @@ void keyReleased(){
     //p.y = random(height);
     points.remove(i);
   }
-  //saveFrame("perlin####.png");
 }
  
 class Point { 

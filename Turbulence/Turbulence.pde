@@ -1,7 +1,7 @@
 
 
 void setup() {
-  size(320, 180); 
+  size(320, 320); 
 
   }
 
@@ -26,4 +26,3 @@ void draw() {
 //  delay(100);
   
 }
-
